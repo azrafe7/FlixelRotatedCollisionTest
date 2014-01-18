@@ -2,7 +2,10 @@ package;
 
 import flash.Lib;
 import flixel.*;
+import flixel.FlxG;
+import flixel.FlxGame;
 import gameStates.*;
+import openfl.display.FPS;
 
 class GameClass extends FlxGame
 {	
@@ -17,5 +20,10 @@ class GameClass extends FlxGame
 		
 		super(Math.ceil(stageWidth / ratio), Math.ceil(stageHeight / ratio), PlayState, ratio, fps, fps);
 		FlxG.autoPause = false;
+		
+		FlxG.mouse.useSystemCursor = true;
+		FlxG.mouse.show();
+		
+		Lib.current.stage.addChild(new FPS(0, 20, 0xFFFFFF));
 	}
 }

@@ -2,7 +2,7 @@
 <project>
 	<app title="collisiontest" file="collisiontest" main="Main" version="0.0.1" company="HaxeFlixel" />
 	
-	<window width="1000" height="700" fps="1" orientation="landscape" fullscreen="false" hardware="true" vsync="true" />
+	<window width="800" height="600" fps="1" orientation="landscape" fullscreen="false" hardware="true" vsync="true" />
 	
 	<!--The flixel preloader gets stuck in Chrome, so it's disabled by default for now. 
 	Safe to use if you embed the swf into a html file!-->
@@ -14,13 +14,9 @@
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
 	
-	<assets path="assets" />
 	
 	<haxelib name="openfl" />
-	<haxelib name="nape" />
 	<haxelib name="flixel"/>
-	<haxelib name="flixel-addons"/>
-
 	
 	<!--In case you want to use the addons package-->
 	<!--<haxelib name="flixel-addons" />-->
