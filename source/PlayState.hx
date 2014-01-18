@@ -29,6 +29,7 @@ class PlayState extends FlxState
 	private var players:Array<FlxSprite> = new Array<FlxSprite>();
 	private var player:FlxSprite;
 	
+	var switchFunction:Bool = false;
 	var dbgPoint:Point;
 	var txt:flixel.text.FlxText;
 	var INFO1:String = 'R - reset   SPACE - toggle rotation   W/S - num players: ';
@@ -97,6 +98,11 @@ class PlayState extends FlxState
 	
 	override public function update():Void
 	{			
+		if (switchFunction) {
+			updateInfo();
+			switchFunction = false;
+		}
+		
 		if (FlxG.keyboard.pressed("LEFT")) player.x -= 2;
 		if (FlxG.keyboard.pressed("RIGHT")) player.x += 2;
 		if (FlxG.keyboard.pressed("UP")) player.y -= 2;
@@ -166,9 +172,11 @@ class PlayState extends FlxState
 	// switch collision func on keypress
 	public function onKeyUp(e:KeyboardEvent):Void 
 	{
-		if (e.keyCode >= "1".code && e.keyCode < ("1".code + map.length)) {
-			currentIdx = e.keyCode - "1".code;
-			updateInfo();
+		if (e.charCode >= "1".code && e.charCode < ("1".code + map.length)) {
+			if (currentIdx != e.charCode - "1".code) {
+				currentIdx = e.charCode - "1".code;
+				switchFunction = true;
+			};
 		}
 	}
 }
