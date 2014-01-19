@@ -1,8 +1,10 @@
 package; 
 
+import collisions.BMDPool;
 import collisions.DebugCollision;
 import collisions.FinalCollision;
 import collisions.FinalNoPoolCollision;
+import collisions.FinalUnifiedCollision;
 import collisions.ICollision;
 import collisions.NewCacheCollision;
 import collisions.NoCacheCollision;
@@ -29,10 +31,12 @@ class PlayState extends FlxState
 	private var players:Array<FlxSprite> = new Array<FlxSprite>();
 	private var player:FlxSprite;
 	
+	private var bmd:BitmapData = new BitmapData(100, 20);
+	
 	var switchFunction:Bool = false;
 	var dbgPoint:Point;
 	var txt:flixel.text.FlxText;
-	var INFO1:String = 'R - reset   SPACE - toggle rotation   W/S - num players: ';
+	var INFO1:String = 'R - reset         SPACE - toggle rotation           W/S - num players: ';
 	var INFO2:String = 'keys 1-xxx to change collision function             current: ';
 	
 	private var rotate:Bool = true;
@@ -58,8 +62,9 @@ class PlayState extends FlxState
 	
 	public function addPlayer():FlxSprite 
 	{
-		var p = new FlxSprite(Math.random()*FlxG.camera.width, Math.random()*FlxG.camera.height);
-		p.makeGraphic(100, 20);
+		var p = new FlxSprite(Math.random() * FlxG.camera.width, Math.random() * FlxG.camera.height);
+		//p.makeGraphic(100, 20);
+		p.loadGraphic(bmd);
 		p.angle = Math.random() * 360;
 		
 		players.push(p);
@@ -78,7 +83,7 @@ class PlayState extends FlxState
 		FlxG.debugger.visible = true;
 		dbgPoint = new Point(50, 50);
 	
-		txt = new FlxText(5, 275, 400, INFO1 + "\n" + INFO2);
+		txt = new FlxText(5, FlxG.camera.height - 26, 400, INFO1 + "\n" + INFO2);
 		txt.color = 0x3060E0;
 		add(txt);
 		
@@ -89,6 +94,7 @@ class PlayState extends FlxState
 		map.push({name:"opt debug", collision:new DebugCollision()});
 		map.push({name:"final (w/ pool)", collision:new FinalCollision()});
 		map.push({name:"final (no pool)", collision:new FinalNoPoolCollision()});
+		map.push({name:"unified (w/ pool)", collision:new FinalUnifiedCollision()});
 		
 		INFO2 = INFO2.split("xxx").join(Std.string(map.length));
 		updateInfo();
@@ -108,16 +114,18 @@ class PlayState extends FlxState
 		if (FlxG.keyboard.pressed("UP")) player.y -= 2;
 		if (FlxG.keyboard.pressed("DOWN")) player.y += 2;
 	
-	#if (flash || js)
-		if (FlxG.keyboard.pressed("ESCAPE")) System.exit(0);
-	#else
-		if (FlxG.keyboard.pressed("ESCAPE")) Sys.exit(0);
-	#end
-	
+		if (FlxG.keyboard.pressed("ESCAPE")) {
+		#if (flash || js)
+			System.exit(0);
+		#else
+			Sys.exit(0);
+		#end
+		}
+		
 		if (FlxG.keyboard.justPressed("SPACE")) rotate = !rotate;
 		if (FlxG.keyboard.justPressed("R")) FlxG.switchState(new PlayState(currentIdx, rotate, nPlayers));
 	
-		if (FlxG.keyboard.justPressed("W", "Q")) nPlayers++;
+		if (FlxG.keyboard.justPressed("W", "Z")) nPlayers++;
 		if (FlxG.keyboard.justPressed("S")) nPlayers = Std.int(Math.max(nPlayers - 1, 2));
 		
 		// add/remove players
@@ -172,9 +180,9 @@ class PlayState extends FlxState
 	// switch collision func on keypress
 	public function onKeyUp(e:KeyboardEvent):Void 
 	{
-		if (e.charCode >= "1".code && e.charCode < ("1".code + map.length)) {
-			if (currentIdx != e.charCode - "1".code) {
-				currentIdx = e.charCode - "1".code;
+		if (e.keyCode >= "1".code && e.keyCode < ("1".code + map.length)) {
+			if (currentIdx != e.keyCode - "1".code) {
+				currentIdx = e.keyCode - "1".code;
 				switchFunction = true;
 			};
 		}

@@ -14,7 +14,7 @@ class GameClass extends FlxGame
 		var stageWidth:Int = Lib.current.stage.stageWidth;
 		var stageHeight:Int = Lib.current.stage.stageHeight;
 
-		var ratio:Float = 2;
+		var ratio:Float = 1;
 		
 		var fps:Int = 60;
 		

@@ -1,6 +1,6 @@
 package collisions;
 
-// azrafe7 (final)
+// azrafe7 (unified)
 
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -18,7 +18,7 @@ import collisions.BMDPool;
 
 using collisions.Extensions;	// temp workaround to have Rectangle.setTo() on all targets
 
-class FinalCollision implements ICollision {
+class FinalUnifiedCollision implements ICollision {
 	public var debug:BitmapData = new BitmapData(1, 1, false);
 	
 	// Optimization: Local static vars to reduce allocations
@@ -137,26 +137,9 @@ class FinalCollision implements ICollision {
 			testMatrix.translate(boundsB.width / 2, boundsB.height / 2);
 			
 			var testB2:BitmapData = BMDPool.create(Math.floor(boundsB.width), Math.floor(boundsB.height), true, 0x00000000, false);
-			testB2.draw(testB, testMatrix, null, null, null, false);			
+			testB2.draw(testB, testMatrix, null, null, null, false);
 			testB = testB2;
 		}
-		
-	#if flash
-		
-		var overlapArea:BitmapData = new BitmapData(overlapWidth, overlapHeight, false);
-		
-		overlapArea.draw(testA, matrixA, new ColorTransform(1, 1, 1, 1, 255, -255, -255, AlphaTolerance), BlendMode.NORMAL);
-		overlapArea.draw(testB, matrixB, new ColorTransform(1, 1, 1, 1, 255, 255, 255, AlphaTolerance), BlendMode.DIFFERENCE);
-		
-		// Developers: If you'd like to see how this works enable the debugger and display it in your game somewhere (only Flash target).
-		debug = overlapArea;
-		
-		var overlap:Rectangle = overlapArea.getColorBoundsRect(0xffffffff, 0xff00ffff);
-		overlap.offset(intersect.x, intersect.y);
-		
-		return (!overlap.isEmpty());
-		
-	#else
 		
 		boundsA.setTo(Std.int(-matrixA.tx), Std.int(-matrixA.ty), overlapWidth, overlapHeight);
 		boundsB.setTo(Std.int(-matrixB.tx), Std.int(-matrixB.ty), overlapWidth, overlapHeight);
@@ -193,6 +176,5 @@ class FinalCollision implements ICollision {
 		}
 		
 		return hit;
-	#end
 	}
 }
