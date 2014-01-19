@@ -36,8 +36,9 @@ class PlayState extends FlxState
 	var switchFunction:Bool = false;
 	var dbgPoint:Point;
 	var txt:flixel.text.FlxText;
-	var INFO1:String = 'R - reset         SPACE - toggle rotation           W/S - num players: ';
-	var INFO2:String = 'keys 1-xxx to change collision function             current: ';
+	var INFO1:String = 'R - reset/random     SPACE - toggle rotation     W/S - num players: ';
+	var INFO2:String = 'keys 1-xxx to change collision function                 current: ';
+	var collTxt:flixel.text.FlxText;
 	
 	private var rotate:Bool = true;
 	
@@ -86,6 +87,9 @@ class PlayState extends FlxState
 		txt = new FlxText(5, FlxG.camera.height - 26, 400, INFO1 + "\n" + INFO2);
 		txt.color = 0x3060E0;
 		add(txt);
+		
+		collTxt = new FlxText(5, 40, 100);
+		add(collTxt);
 		
 		map = new Array();
 		map.push({name:"original (unmodified)", collision:new OriginalCollision()});
@@ -146,6 +150,7 @@ class PlayState extends FlxState
 		}
 		
 		// (naive) pixel perfect check between all
+		var nColliding:Int = 0;
 		for (i in 0...players.length) {
 			var p1 = players[i];
 			var collides = false;
@@ -155,11 +160,13 @@ class PlayState extends FlxState
 				var p2 = players[j];
 				if (currentFunc(p1, p2, 255)) {
 					collides = true;
+					nColliding++;
 					break;
 				}
 			}
 			p1.color = collides ? 0x00FF00 : 0xFFFFFF;
 		}
+		collTxt.text = "colliding: " + nColliding;
 	}	
 	
 	override public function draw():Void 

@@ -24,6 +24,6 @@ class GameClass extends FlxGame
 		FlxG.mouse.useSystemCursor = true;
 		FlxG.mouse.show();
 		
-		Lib.current.stage.addChild(new FPS(0, 20, 0xFFFFFF));
+		Lib.current.stage.addChild(new FPS(5, 20, 0xFFFFFF));
 	}
 }
