@@ -1,11 +1,12 @@
 package; 
 
-import collisions.BMDPool;
 import collisions.DebugCollision;
 import collisions.FinalCollision;
 import collisions.FinalNoPoolCollision;
 import collisions.FinalUnifiedCollision;
+import collisions.GetPixelCollision;
 import collisions.ICollision;
+import collisions.OddEvenCollision;
 import collisions.NewCacheCollision;
 import collisions.NoCacheCollision;
 import collisions.OriginalCollision;
@@ -99,6 +100,8 @@ class PlayState extends FlxState
 		map.push({name:"final (w/ pool)", collision:new FinalCollision()});
 		map.push({name:"final (no pool)", collision:new FinalNoPoolCollision()});
 		map.push({name:"unified (w/ pool)", collision:new FinalUnifiedCollision()});
+		map.push({name:"getPixel (w/ pool)", collision:new GetPixelCollision()});
+		map.push({name:"odd/even (w/ pool)", collision:new OddEvenCollision()});
 		
 		INFO2 = INFO2.split("xxx").join(Std.string(map.length));
 		updateInfo();
@@ -192,6 +195,9 @@ class PlayState extends FlxState
 				currentIdx = e.keyCode - "1".code;
 				switchFunction = true;
 			};
+		}
+		if (e.keyCode == "H".code) {
+			FlxG.log.add(Type.getClassName(BMDPool) + " " + BMDPool.hitRatio);
 		}
 	}
 }

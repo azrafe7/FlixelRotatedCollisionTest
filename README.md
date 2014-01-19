@@ -14,6 +14,9 @@ progress
  * Improved BMDPool class (hitRatio stays around 0.95)
  * FinalCollision is the last iteration of the code (with and without pooling)
  * FinalUnifiedCollision uses _practically_ the same code for Flash and non-Flash targets (uses pooling and performs slightly better than the previous Flash implementations with the blend color trick)
+ * Experimental GetPixelCollision (slower than Final ones)
+ * Alternative BMDPool implemented with List instead of Array
+ * OddEvenCollision (which seems to perform sligthly better - but is less easier to read)
  
 You can check it right away by running the demo: the collision code is independent from HaxeFlixel, calls local classes.
 

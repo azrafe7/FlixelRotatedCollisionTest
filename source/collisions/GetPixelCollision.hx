@@ -1,7 +1,8 @@
 package collisions;
 
-// azrafe7 (final no pool)
+// azrafe7 (unified)
 
+import collisions.ICollision.BMDPool;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -17,7 +18,7 @@ import flash.geom.Rectangle;
 
 using collisions.Extensions;	// temp workaround to have Rectangle.setTo() on all targets
 
-class FinalNoPoolCollision implements ICollision {
+class GetPixelCollision implements ICollision {
 	public var debug:BitmapData = new BitmapData(1, 1, false);
 	
 	// Optimization: Local static vars to reduce allocations
@@ -123,7 +124,7 @@ class FinalNoPoolCollision implements ICollision {
 			testMatrix.translate(boundsA.width / 2, boundsA.height / 2);
 			
 			// prepare an empty canvas
-			var testA2:BitmapData = new BitmapData(Math.floor(boundsA.width), Math.floor(boundsA.height), true, 0x00000000);
+			var testA2:BitmapData = BMDPool.create(Math.floor(boundsA.width), Math.floor(boundsA.height), true, 0x00000000, false);
 			
 			// plot the sprite using the matrix
 			testA2.draw(testA, testMatrix, null, null, null, false);
@@ -135,47 +136,29 @@ class FinalNoPoolCollision implements ICollision {
 			testMatrix.rotate(Target.angle * 0.017453293 );  // degrees to rad
 			testMatrix.translate(boundsB.width / 2, boundsB.height / 2);
 			
-			var testB2:BitmapData = new BitmapData(Math.floor(boundsB.width), Math.floor(boundsB.height), true, 0x00000000);
-			testB2.draw(testB, testMatrix, null, null, null, false);			
+			var testB2:BitmapData = BMDPool.create(Math.floor(boundsB.width), Math.floor(boundsB.height), true, 0x00000000, false);
+			testB2.draw(testB, testMatrix, null, null, null, false);
 			testB = testB2;
 		}
 		
-	#if flash
-		
-		var overlapArea:BitmapData = new BitmapData(overlapWidth, overlapHeight, false);
-		
-		overlapArea.draw(testA, matrixA, new ColorTransform(1, 1, 1, 1, 255, -255, -255, AlphaTolerance), BlendMode.NORMAL);
-		overlapArea.draw(testB, matrixB, new ColorTransform(1, 1, 1, 1, 255, 255, 255, AlphaTolerance), BlendMode.DIFFERENCE);
-		
-		// Developers: If you'd like to see how this works enable the debugger and display it in your game somewhere (only Flash target).
-		debug = overlapArea;
-		
-		var overlap:Rectangle = overlapArea.getColorBoundsRect(0xffffffff, 0xff00ffff);
-		overlap.offset(intersect.x, intersect.y);
-		
-		return (!overlap.isEmpty());
-		
-	#else
-		
-		boundsA.setTo(Std.int(-matrixA.tx), Std.int(-matrixA.ty), overlapWidth, overlapHeight);
-		boundsB.setTo(Std.int(-matrixB.tx), Std.int(-matrixB.ty), overlapWidth, overlapHeight);
-
-		var pixelsA = testA.getPixels(boundsA);
-		var pixelsB = testB.getPixels(boundsB);
+		var boundsAX:Int = Std.int(-matrixA.tx);
+		var boundsAY:Int = Std.int(-matrixA.ty);
+		var boundsBX:Int = Std.int(-matrixB.tx);
+		var boundsBY:Int = Std.int(-matrixB.ty);
 		
 		var hit = false;
 		
 		// Analyze overlapping area of BitmapDatas to check for a collision (alpha values >= AlphaTolerance)
+		testA.lock();
+		testB.lock();
 		var alphaA:Int = 0;
 		var alphaB:Int = 0;
-		var idx:Int = 0;
 		for (y in 0...overlapHeight) 
 		{
 			for (x in 0...overlapWidth) 
 			{
-				idx = (y * overlapWidth + x) << 2;
-				alphaA = pixelsA[idx];
-				alphaB = pixelsB[idx];
+				alphaA = testA.getPixel32(boundsAX + x, boundsAY + y) >>> 24;
+				alphaB = testB.getPixel32(boundsBX + x, boundsBY + y) >>> 24;
 				if (alphaA >= AlphaTolerance && alphaB >= AlphaTolerance) 
 				{
 					hit = true;
@@ -184,8 +167,15 @@ class FinalNoPoolCollision implements ICollision {
 			}
 			if (hit) break;
 		}
+		testA.unlock(boundsA);
+		testB.unlock(boundsB);
+		
+		if (considerRotation) 
+		{
+			BMDPool.recycle(testA);
+			BMDPool.recycle(testB);
+		}
 		
 		return hit;
-	#end
 	}
 }

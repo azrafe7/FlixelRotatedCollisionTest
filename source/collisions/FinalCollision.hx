@@ -2,6 +2,7 @@ package collisions;
 
 // azrafe7 (final)
 
+import collisions.ICollision.BMDPool;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -13,7 +14,6 @@ import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import collisions.BMDPool;
 
 
 using collisions.Extensions;	// temp workaround to have Rectangle.setTo() on all targets
