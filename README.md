@@ -15,3 +15,5 @@ progress
  * FinalUnifiedCollision uses _almost_ the same code for Flash and non-Flash targets (uses pooling and performs slightly better than the previous Flash implementation - aka blend color trick)
  
 You can check it right away by running the demo: the collision code is independent from HaxeFlixel, calls local classes.
+
+![screenshot00-cpp_release.png](screenshot00-cpp_release.png)
