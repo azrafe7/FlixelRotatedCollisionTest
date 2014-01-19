@@ -11,8 +11,9 @@ progress
  * First tries (NoCache and NewCache) were a step forward but still buggy in some cases
  * Added a (quite _naive_) BMDPool class to reuse temp BitmapData.
  * In DebugCollision I've found the bug in previous tentatives (pixels ByteArrays not aligned/bad size, so giving wrong results)
+ * Improved BMDPool class (hitRatio stays around 0.95)
  * FinalCollision is the last iteration of the code (with and without pooling)
- * FinalUnifiedCollision uses _almost_ the same code for Flash and non-Flash targets (uses pooling and performs slightly better than the previous Flash implementation - aka blend color trick)
+ * FinalUnifiedCollision uses _practically_ the same code for Flash and non-Flash targets (uses pooling and performs slightly better than the previous Flash implementations with the blend color trick)
  
 You can check it right away by running the demo: the collision code is independent from HaxeFlixel, calls local classes.
 
