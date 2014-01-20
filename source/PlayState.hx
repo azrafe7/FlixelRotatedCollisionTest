@@ -1,5 +1,8 @@
 package; 
 
+import collisions.BMDPool_Array;
+import collisions.BMDPool_Inner;
+import collisions.BMDPool_List;
 import collisions.DebugCollision;
 import collisions.FinalCollision;
 import collisions.FinalNoPoolCollision;
@@ -89,7 +92,7 @@ class PlayState extends FlxState
 		txt.color = 0x3060E0;
 		add(txt);
 		
-		collTxt = new FlxText(5, 40, 100);
+		collTxt = new FlxText(5, 40, 180);
 		add(collTxt);
 		
 		map = new Array();
@@ -135,6 +138,11 @@ class PlayState extends FlxState
 		if (FlxG.keyboard.justPressed("W", "Z")) nPlayers++;
 		if (FlxG.keyboard.justPressed("S")) nPlayers = Std.int(Math.max(nPlayers - 1, 2));
 		
+		if (FlxG.keyboard.justPressed("I")) BMDPool.inst = BMDPool_Array;
+		if (FlxG.keyboard.justPressed("O")) BMDPool.inst = BMDPool_List;
+		if (FlxG.keyboard.justPressed("P")) BMDPool.inst = BMDPool_Inner;
+		
+		
 		// add/remove players
 		if (nPlayers != players.length) {
 			var len = players.length;
@@ -169,7 +177,7 @@ class PlayState extends FlxState
 			}
 			p1.color = collides ? 0x00FF00 : 0xFFFFFF;
 		}
-		collTxt.text = "colliding: " + nColliding;
+		collTxt.text = "colliding: " + nColliding + "\n\npool: " + BMDPool.inst;
 	}	
 	
 	override public function draw():Void 
@@ -184,7 +192,7 @@ class PlayState extends FlxState
 	{
 		currentFunc = map[currentIdx].collision.pixelPerfectCheck;
 		currentName = map[currentIdx].name;
-		txt.text = INFO1 + nPlayers + "\n" + INFO2 + (currentIdx + 1) + " - " + currentName;
+		txt.text = INFO1 + nPlayers + "\n" + INFO2 + (currentIdx + 1) + ". " + currentName;
 	}
 	
 	// switch collision func on keypress
@@ -197,7 +205,7 @@ class PlayState extends FlxState
 			};
 		}
 		if (e.keyCode == "H".code) {
-			FlxG.log.add(Type.getClassName(BMDPool) + " " + BMDPool.hitRatio);
+			FlxG.log.add(Type.getClassName(BMDPool) + " " + BMDPool.inst.hitRatio);
 		}
 	}
 }

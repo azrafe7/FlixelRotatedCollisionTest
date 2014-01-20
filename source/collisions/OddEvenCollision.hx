@@ -124,7 +124,7 @@ class OddEvenCollision implements ICollision {
 			testMatrix.translate(boundsA.width / 2, boundsA.height / 2);
 			
 			// prepare an empty canvas
-			var testA2:BitmapData = BMDPool.create(Math.floor(boundsA.width), Math.floor(boundsA.height), true, 0x00000000, false);
+			var testA2:BitmapData = BMDPool.inst.create(Math.floor(boundsA.width), Math.floor(boundsA.height), true, 0x00000000, false);
 			
 			// plot the sprite using the matrix
 			testA2.draw(testA, testMatrix, null, null, null, false);
@@ -136,7 +136,7 @@ class OddEvenCollision implements ICollision {
 			testMatrix.rotate(Target.angle * 0.017453293 );  // degrees to rad
 			testMatrix.translate(boundsB.width / 2, boundsB.height / 2);
 			
-			var testB2:BitmapData = BMDPool.create(Math.floor(boundsB.width), Math.floor(boundsB.height), true, 0x00000000, false);
+			var testB2:BitmapData = BMDPool.inst.create(Math.floor(boundsB.width), Math.floor(boundsB.height), true, 0x00000000, false);
 			testB2.draw(testB, testMatrix, null, null, null, false);
 			testB = testB2;
 		}
@@ -153,7 +153,6 @@ class OddEvenCollision implements ICollision {
 		var alphaA:Int = 0;
 		var alphaB:Int = 0;
 		var overlapPixels:Int = overlapWidth * overlapHeight;
-		var halfPixels:Int = overlapPixels >> 1;
 		var alphaIdx:Int = 0;
 		
 		// check even pixels
@@ -167,14 +166,13 @@ class OddEvenCollision implements ICollision {
 				hit = true;
 				break; 
 			}
-			if (hit) break;
 		}
 		
 		if (!hit) {
 			// check odd pixels
-			for (i in 0...halfPixels) 
+			for (i in 0...overlapPixels >> 1) 
 			{
-				alphaIdx = ((i << 2) + 1) << 1;
+				alphaIdx = (i << 3) + 4;
 				alphaA = pixelsA[alphaIdx];
 				alphaB = pixelsB[alphaIdx];
 				if (alphaA >= AlphaTolerance && alphaB >= AlphaTolerance) 
@@ -182,14 +180,13 @@ class OddEvenCollision implements ICollision {
 					hit = true;
 					break; 
 				}
-				if (hit) break;
 			}
 		}
 		
 		if (considerRotation) 
 		{
-			BMDPool.recycle(testA);
-			BMDPool.recycle(testB);
+			BMDPool.inst.recycle(testA);
+			BMDPool.inst.recycle(testB);
 		}
 		
 		return hit;
